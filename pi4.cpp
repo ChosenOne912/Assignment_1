@@ -1,3 +1,9 @@
+/*
+Author Name: W. Austin Wade
+File Name: pi4.cpp
+Parallel Calculation of PI with waiting protection and local sum
+*/
+
 #include <sys/time.h>
 
 #include <iostream>
@@ -15,8 +21,14 @@ unsigned int n = 0;
 unsigned int thread_count = 0;
 long flag = 0;
 
+/*
+Calculates a certain range of PI values
+
+@param rank The rank of the thread
+*/
 void *pi_thread(void *rank)
 {
+		//Set up all the local variables
 		long my_rank = (long) rank;
 		double factor, my_sum = 0.0;
 		long long i;
@@ -24,6 +36,7 @@ void *pi_thread(void *rank)
 		long long my_first_i = my_n*my_rank;
 		long long my_last_i = my_first_i + my_n;
 
+		//Compute the first factor
 		if(my_first_i % 2 == 0)
 		{
 			factor = 1.0;
@@ -33,11 +46,13 @@ void *pi_thread(void *rank)
 			factor = -1.0;
 		}
 
+		//Calculate PI to a local sum
 		for(i = my_first_i; i < my_last_i; i++, factor = -factor)
 		{
 			my_sum += factor/((2*i)+1);
 		}
 
+		//Wait until this threads turn to add to global sum
 		while(flag != my_rank);
 		pi += my_sum;
 		flag = (flag+1)%thread_count;
@@ -45,7 +60,14 @@ void *pi_thread(void *rank)
 		return NULL;
 }
 
-// TODO: implement this function
+/*
+This function will set up the threads for calculating PI in parallel
+
+@param terms The number of terms to calculate to
+@param threads The number of threads to used
+
+@return The value of PI
+*/
 double calculate_pi(unsigned int terms, unsigned int threads)
 {
 	n = terms;

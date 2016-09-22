@@ -1,3 +1,9 @@
+/*
+Author Name: W. Austin Wade
+File Name: pi1.cpp
+Serial Calculation of PI
+*/
+
 #include <sys/time.h>
 
 #include <iostream>
@@ -7,7 +13,13 @@
 #include <climits>
 #include <cstring>
 
-// TODO: implement this function
+/*
+This funcion calculates PI serially
+
+@param terms The number of terms to calculate to
+
+@return The final value of PI calculated
+*/
 double calculate_pi(unsigned int terms)
 {
 	double factor = 1.0;
